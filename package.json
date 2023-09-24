@@ -58,6 +58,8 @@
     "jsonwebtoken": "^9.0.1",
     "mongoose": "^7.4.0",
     "morgan": "^1.10.0",
+    "os-browserify": "^0.3.0",
+    "path-browserify": "^1.0.1",
     "serve-favicon": "^2.5.0"
   }
 }

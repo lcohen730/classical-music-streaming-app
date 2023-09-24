@@ -1,3 +1,4 @@
+require('dotenv').config();
 const path = require('path');
 const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -16,7 +17,7 @@ module.exports = env => {
 			filename: '[name].[contenthash].js', // '[name].[contenthash].js' put this if you want to get hashed files to cache bust
 			sourceMapFilename: "[name].[contenthash].js.map"
 		},
-		devtool:"source-map",
+		devtool: "source-map",
 		module: {
 			rules: [
 				{
@@ -44,7 +45,13 @@ module.exports = env => {
 		resolve: {
 			modules: [
 				'node_modules'
-			]
+			],
+			fallback: {
+				"path": require.resolve("path-browserify"),
+				"os": require.resolve("os-browserify/browser"),
+				/* "crypto": require.resolve("crypto-browserify") */
+				"crypto": false
+			}
 		},
 		plugins: [
 			new MiniCssExtractPlugin({
@@ -59,7 +66,12 @@ module.exports = env => {
 			}),
 			new CleanWebpackPlugin(),
 			new webpack.ProvidePlugin({
-				'React': 'react'
+				'React': 'react',
+			}),
+			new webpack.DefinePlugin({
+				'process.env.MONGO_URI': JSON.stringify(process.env.MONGO_URI),
+				'process.env.CLIENT_ID': JSON.stringify(process.env.CLIENT_ID),
+				'process.env.SECRET': JSON.stringify(process.env.SECRET)
 			})
 		],
 		optimization: {

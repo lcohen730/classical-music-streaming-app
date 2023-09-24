@@ -1,11 +1,13 @@
-require('dotenv').config()
 import { useState } from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
 
 export default function Home(props) {
 	const [composer, setComposer] = useState(null);
 	const [formData, setFormData] = useState({ searchTerm: "" });
 
-	// code verifier generated as a cryptographic random string with a length between 43 and 128 characters
+	/* -------- CODE VERIFIER -------- */
+
+	// generated as a cryptographic random string with a length between 43 and 128 characters
 	const generateRandomString = (length) => {
 		let text = '';
 		let possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -16,7 +18,9 @@ export default function Home(props) {
 		return text;
 	}
 
-	// has code verifier using the SHA256 algorithm and return the base64 representation of the hash
+	/* -------- CODE CHALLENGE -------- */
+
+	// hash code verifier using the SHA256 algorithm and return the base64 representation of the hash
 	const generateCodeChallenge = async (codeVerifier) => {
 		function base64encode(string) {
 			return btoa(String.fromCharCode.apply(null, new Uint8Array(string)))
@@ -32,9 +36,10 @@ export default function Home(props) {
 		return base64encode(digest);
 	}
 
-	// request user authorization
+	/* -------- REQUEST USER AUTHORIZATION -------- */
+
 	const clientId = process.env.CLIENT_ID;
-	const redirectUri = 'http://localhost:6000';
+	const redirectUri = 'http://localhost:5000';
 
 	let codeVerifier = generateRandomString(128);
 
@@ -61,7 +66,41 @@ export default function Home(props) {
 	const urlParams = new URLSearchParams(window.location.search);
 	let code = urlParams.get('code');
 
-	const getUser = async () => {
+	/* -------- REQUEST AN ACCESS TOKEN -------- */
+
+	// body of POST request to /api/token
+	codeVerifier = localStorage.getItem('code_verifier');
+
+	let body = new URLSearchParams({
+		grant_type: 'authorization_code',
+		code: code,
+		redirect_uri: redirectUri,
+		client_id: clientId,
+		code_verifier: codeVerifier
+	});
+
+	// make the POST request and store the access token by parsing the JSON response from the server
+	const response = fetch('https://accounts.spotify.com/api/token', {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded'
+		},
+		body: body
+	})
+		.then(response => {
+			if (!response.ok) {
+				throw new Error('HTTP status ' + response.status);
+			}
+			return response.json();
+		})
+		.then(data => {
+			localStorage.setItem('access_token', data.access_token);
+		})
+		.catch(error => {
+			console.error('Error:', error);
+		});
+
+	/* const getUser = async () => {
 		try {
 			const response = await fetch(
 				`https://api.spotify.com/v1/artists/${composerId}`
@@ -74,23 +113,26 @@ export default function Home(props) {
 			console.error(e);
 		}
 	}
-	getUser();
+	getUser(); */
 
 	const getComposer = async (composerId) => {
 		// make fetch request and store response
 		try {
-			const response = await fetch(
-				`https://api.spotify.com/v1/artists/${composerId}`
-			);
+			let accessToken = localStorage.getItem('access_token');
+			const response = await fetch(`https://api.spotify.com/v1/artists/${composerId}`, {
+				headers: {
+					Authorization: 'Bearer ' + accessToken
+				}
+			});
 			// Parse JSON response into a javascript object
 			const data = await response.json();
-			//set the Movie state to the movie
+			// set the composer state to the composer
 			setComposer(data);
 		} catch (e) {
 			console.error(e);
 		}
 	};
-	getComposer('3MKCzCnpzw3TjUYs2v7vDA?si=vPD3udl4Q4K8mvGLMyayFw');
+	/* getComposer('3MKCzCnpzw3TjUYs2v7vDA?si=vPD3udl4Q4K8mvGLMyayFw'); */
 
 	const handleChange = (e) => {
 		setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -111,6 +153,11 @@ export default function Home(props) {
 
 	return (
 		<div className="HomePage">
+			<Routes>
+				{/* client-side route that renders the component instance if the path matches the url in the address bar */}
+				<Route path="/home" />
+				<Route path="/*" element={<Navigate to="/home" />} />
+			</Routes>
 			<center>
 				<h1>This is the {props.page} page</h1>
 				{/* <form onSubmit={handleSubmit}>
@@ -124,11 +171,14 @@ export default function Home(props) {
 					<input type="submit" value="search" />
 				</form>
 				{ composer && composer.name ? loaded() : loading() } */}
-				<div>
-					<h1>{composer.name}</h1>
-					<h3>{composer.genres}</h3>
-					<img src={composer.images[0]} alt={composer.name} />
-				</div>
+				<button onClick={() => getComposer('3MKCzCnpzw3TjUYs2v7vDA?si=vPD3udl4Q4K8mvGLMyayFw')}>GET INFO ABOUT TCHAIKOVSKY</button>
+				{composer ?
+					<div>
+						<h1>{composer.name}</h1>
+						<h3>{composer.genres}</h3>
+						<img src={composer.images[0]} alt={composer.name} />
+					</div>
+					: ""}
 			</center>
 		</div>
 	)
