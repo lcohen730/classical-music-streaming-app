@@ -1,7 +1,9 @@
+/* import * as styles from './Home.module.scss'; */
+import './Home.scss';
 import { useState } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 
-export default function Home(props) {
+export default function Home() {
 	const [composer, setComposer] = useState(null);
 	const [formData, setFormData] = useState({ searchTerm: "" });
 
@@ -43,24 +45,24 @@ export default function Home(props) {
 
 	let codeVerifier = generateRandomString(128);
 
-	generateCodeChallenge(codeVerifier).then(codeChallenge => {
-		let state = generateRandomString(16);
-		/* let scope = 'user-read-private user-read-email'; */
+	/* generateCodeChallenge(codeVerifier).then(codeChallenge => {
+		let state = generateRandomString(16); */
+	/* let scope = 'user-read-private user-read-email'; */
 
-		localStorage.setItem('code_verifier', codeVerifier);
+	/* localStorage.setItem('code_verifier', codeVerifier);
 
-		let args = new URLSearchParams({
-			response_type: 'code',
-			client_id: clientId,
-			/* scope: scope, */
-			redirect_uri: redirectUri,
-			state: state,
-			code_challenge_method: 'S256',
-			code_challenge: codeChallenge
-		});
+	let args = new URLSearchParams({
+		response_type: 'code',
+		client_id: clientId, */
+	/* scope: scope, */
+	/* redirect_uri: redirectUri,
+	state: state,
+	code_challenge_method: 'S256',
+	code_challenge: codeChallenge
+});
 
-		window.location = 'https://accounts.spotify.com/authorize?' + args;
-	});
+window.location = 'https://accounts.spotify.com/authorize?' + args;
+}); */
 
 	// parse the URL and save the code parameter to request the access token afterwards
 	const urlParams = new URLSearchParams(window.location.search);
@@ -80,7 +82,7 @@ export default function Home(props) {
 	});
 
 	// make the POST request and store the access token by parsing the JSON response from the server
-	const response = fetch('https://accounts.spotify.com/api/token', {
+	/* const response = fetch('https://accounts.spotify.com/api/token', {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/x-www-form-urlencoded'
@@ -98,7 +100,7 @@ export default function Home(props) {
 		})
 		.catch(error => {
 			console.error('Error:', error);
-		});
+		}); */
 
 	/* const getUser = async () => {
 		try {
@@ -152,14 +154,22 @@ export default function Home(props) {
 	);
 
 	return (
-		<div className="HomePage">
+		<div className="homePage">
+			{/* <div className={styles.homePage}> */}
 			<Routes>
 				{/* client-side route that renders the component instance if the path matches the url in the address bar */}
 				<Route path="/home" />
 				<Route path="/*" element={<Navigate to="/home" />} />
 			</Routes>
 			<center>
-				<h1>This is the {props.page} page</h1>
+				<h1>TCHAIKOVSKY</h1>
+				<div className="options">
+					<div>PERIODS</div>
+					<div>MOODS</div>
+					<div>COMPOSERS</div>
+					<div>INSTRUMENTS</div>
+					<div>DISCOVERY</div>
+				</div>
 				{/* <form onSubmit={handleSubmit}>
 					<label>Search:</label>
 					<input
@@ -171,14 +181,14 @@ export default function Home(props) {
 					<input type="submit" value="search" />
 				</form>
 				{ composer && composer.name ? loaded() : loading() } */}
-				<button onClick={() => getComposer('3MKCzCnpzw3TjUYs2v7vDA?si=vPD3udl4Q4K8mvGLMyayFw')}>GET INFO ABOUT TCHAIKOVSKY</button>
+				{/* <button onClick={() => getComposer('3MKCzCnpzw3TjUYs2v7vDA?si=vPD3udl4Q4K8mvGLMyayFw')}>GET INFO ABOUT TCHAIKOVSKY</button>
 				{composer ?
 					<div>
 						<h1>{composer.name}</h1>
-						<h3>{composer.genres}</h3>
-						<img src={composer.images[0]} alt={composer.name} />
-					</div>
-					: ""}
+						<h3>{composer.genres}</h3> */}
+				{/* <img src={composer.images[0]} alt={composer.name} /> */}
+				{/* </div>
+					: ""} */}
 			</center>
 		</div>
 	)

@@ -1,0 +1,22 @@
+body {
+    background-image: url("https://e0.pxfuel.com/wallpapers/511/433/desktop-wallpaper-music-note-art-pattern-sheet-music.jpg");
+    background-size: cover;
+    color: var(--white);
+}
+
+.homePage {
+    padding-top: 10px;
+}
+
+.options {
+    margin-top: 5px;
+}
+
+center > div > div {
+    border: .2vmin solid var(--white);
+    border-radius: 4vmin;
+    font-size: 6vw;
+    margin: 5vmin;
+    padding: 5vmin;
+    background-color: var(--black);
+}
