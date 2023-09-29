@@ -20,3 +20,11 @@ center > div > div {
     padding: 5vmin;
     background-color: var(--black);
 }
+
+.nav button {
+    background: none;
+    color: var(--white);
+    border: none;
+    margin: 0 10vmin;
+    padding: 2vmin;
+}

@@ -1,11 +1,24 @@
 /* import * as styles from './Home.module.scss'; */
 import './Home.scss';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 
 export default function Home() {
 	const [composer, setComposer] = useState(null);
 	const [formData, setFormData] = useState({ searchTerm: "" });
+	const [menu, setMenu] = useState('home');
+
+	/* useEffect(function () {
+		async function getMenu() {
+			setMenu('home');
+		}
+		getMenu();
+		console.log(menu)
+	  }, []); */
+
+	const handleMenuClick = (menuName) => {
+		setMenu(menuName)
+	}
 
 	/* -------- CODE VERIFIER -------- */
 
@@ -144,14 +157,14 @@ window.location = 'https://accounts.spotify.com/authorize?' + args;
 		getComposer(formData.searchTerm);
 	};
 
-	const loading = () => <>Waiting for search...</>;
+	/* const loading = () => <>Waiting for search...</>;
 	const loaded = () => (
 		<div>
 			<h1>{composer.name}</h1>
 			<h3>{composer.genres}</h3>
 			<img src={composer.images[0]} alt={composer.name} />
 		</div>
-	);
+	); */
 
 	return (
 		<div className="homePage">
@@ -163,13 +176,136 @@ window.location = 'https://accounts.spotify.com/authorize?' + args;
 			</Routes>
 			<center>
 				<h1>TCHAIKOVSKY</h1>
-				<div className="options">
-					<div>PERIODS</div>
-					<div>MOODS</div>
-					<div>COMPOSERS</div>
-					<div>INSTRUMENTS</div>
-					<div>DISCOVERY</div>
-				</div>
+				{menu === 'home' ?
+					<div className="options">
+						<div onClick={() => handleMenuClick('periods')}>PERIODS</div>
+						<div onClick={() => handleMenuClick('moods')}>MOODS</div>
+						<div onClick={() => handleMenuClick('composersAZ')}>COMPOSERS</div>
+						<div onClick={() => handleMenuClick('instruments')}>INSTRUMENTS</div>
+						<div onClick={() => handleMenuClick('discovery')}>DISCOVERY</div>
+					</div>
+					: menu === 'periods' ?
+						<>
+							<div className="nav">
+								<button onClick={() => handleMenuClick('home')}>HOME</button>
+								<button onClick={() => handleMenuClick('home')}>← BACK</button>
+							</div>
+							<div className="options">
+								<div onClick={() => handleMenuClick('subGenres')}>PERIOD</div>
+								<div onClick={() => handleMenuClick('subGenres')}>PERIOD</div>
+								<div onClick={() => handleMenuClick('subGenres')}>PERIOD</div>
+								<div onClick={() => handleMenuClick('subGenres')}>PERIOD</div>
+								<div onClick={() => handleMenuClick('subGenres')}>PERIOD</div>
+							</div>
+						</>
+						: menu === 'moods' ?
+							<>
+								<div className="nav">
+									<button onClick={() => handleMenuClick('home')}>HOME</button>
+									<button onClick={() => handleMenuClick('home')}>← BACK</button>
+								</div>
+								<div className="options">
+									<div>MOOD</div>
+									<div>MOOD</div>
+									<div>MOOD</div>
+									<div>MOOD</div>
+									<div>MOOD</div>
+								</div>
+							</>
+							: menu === 'composersAZ' ?
+								<>
+									<div className="nav">
+										<button onClick={() => handleMenuClick('home')}>HOME</button>
+										<button onClick={() => handleMenuClick('home')}>← BACK</button>
+									</div>
+									<div className="options">
+										<div>COMPOSER</div>
+										<div>COMPOSER</div>
+										<div>COMPOSER</div>
+										<div>COMPOSER</div>
+										<div>COMPOSER</div>
+									</div>
+								</>
+								: menu === 'instruments' ?
+									<>
+										<div className="nav">
+											<button onClick={() => handleMenuClick('home')}>HOME</button>
+											<button onClick={() => handleMenuClick('home')}>← BACK</button>
+										</div>
+										<div className="options">
+											<div>INSTRUMENT</div>
+											<div>INSTRUMENT</div>
+											<div>INSTRUMENT</div>
+											<div>INSTRUMENT</div>
+											<div>INSTRUMENT</div>
+										</div>
+									</>
+									: menu === 'discovery' ?
+										<>
+											<div className="nav">
+												<button onClick={() => handleMenuClick('home')}>HOME</button>
+												<button onClick={() => handleMenuClick('home')}>← BACK</button>
+											</div>
+											<p>DISCOVERY PAGE TBD</p>
+										</>
+										: menu === 'subGenres' ?
+											<>
+												<div className="nav">
+													<button onClick={() => handleMenuClick('home')}>HOME</button>
+													<button onClick={() => handleMenuClick('periods')}>← BACK</button>
+												</div>
+												<div className="options">
+													<div onClick={() => handleMenuClick('subGenOpts')}>SUBGENRE</div>
+													<div onClick={() => handleMenuClick('subGenOpts')}>SUBGENRE</div>
+													<div onClick={() => handleMenuClick('subGenOpts')}>SUBGENRE</div>
+													<div onClick={() => handleMenuClick('subGenOpts')}>SUBGENRE</div>
+													<div onClick={() => handleMenuClick('subGenOpts')}>SUBGENRE</div>
+												</div>
+											</>
+											: menu === 'subGenOpts' ?
+												<>
+													<div className="nav">
+														<button onClick={() => handleMenuClick('home')}>HOME</button>
+														<button onClick={() => handleMenuClick('subGenres')}>← BACK</button>
+													</div>
+													<div className="options">
+														<div onClick={() => handleMenuClick('composersByCat')}>COMPOSERS</div>
+														<div onClick={() => handleMenuClick('albums')}>ALBUMS</div>
+														<div>PIECES</div>
+													</div>
+												</>
+												: menu === 'composersByCat' ?
+													<>
+														<div className="nav">
+															<button onClick={() => handleMenuClick('home')}>HOME</button>
+															<button onClick={() => handleMenuClick('subGenOpts')}>← BACK</button>
+														</div>
+														<div className="options">
+															<div>COMPOSER</div>
+															<div>COMPOSER</div>
+															<div>COMPOSER</div>
+															<div>COMPOSER</div>
+															<div>COMPOSER</div>
+														</div>
+													</>
+													: menu === 'albums' ?
+														<>
+															<div className="nav">
+																<button onClick={() => handleMenuClick('home')}>HOME</button>
+																<button onClick={() => handleMenuClick('subGenOpts')}>← BACK</button>
+															</div>
+															<div className="albums">
+																<div>ALBUM</div>
+																<div>ALBUM</div>
+																<div>ALBUM</div>
+																<div>ALBUM</div>
+																<div>ALBUM</div>
+																<div>ALBUM</div>
+																<div>ALBUM</div>
+															</div>
+														</>
+														: ""
+				}
 				{/* <form onSubmit={handleSubmit}>
 					<label>Search:</label>
 					<input
